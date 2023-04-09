@@ -1,7 +1,7 @@
 <?php
-require Connection.php;
-$query='Select title,emoji from category where status="open"';
-$array=mysqli_fetch_array($query);
+// require Connection.php;
+$query = 'Select title,emoji from category where status="open"';
+// $array = mysqli_fetch_array($query);
 function categoriesArray($array)
 {
     while ($array) {
@@ -11,9 +11,10 @@ function categoriesArray($array)
                 <?php $array[0] ?>
             </div>
             <div>
-                <?php $array[1] 
+                <?php $array[1] ?>
             </div>
         </div>
+        <?php
     }
 }
 ?>
