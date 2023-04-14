@@ -6,16 +6,17 @@ $task = $_POST["task"];
 $Date = $_POST["Date"];
 $time = $_POST["time"];
 $Category = $_POST["Category"];
-$id = $_POST['id'];
 $query0 = "SELECT id FROM category WHERE User_Name='$currentuser' AND Title='$Category'";
 $result = mysqli_query($connection, $query0);
 $catID = mysqli_fetch_array($result);
 $response = array();
-$query = "UPDATE task SET task='$task',Date='$Date',time='$time',Category='$catID[0]' WHERE id='$id'";
+$query = "INSERT INTO task (`User_Name`, `task`, `Date`, `time`, `Category`) VALUES('$currentuser','$task','$Date','$time','$catID[0]')";
 if (mysqli_query($connection, $query)) {
     $response['Response'] = "success";
+    // echo "success";
 } else {
     $response['Response'] = "faild";
+    // echo mysqli_error($connection);
 }
 echo json_encode($response);
 ?>

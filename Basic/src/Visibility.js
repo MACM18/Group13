@@ -7,3 +7,9 @@ function visibilityToggle(visibility, item1, item2) {
     document.getElementById(item1).classList.add("hidden");
   }
 }
+function visibilityShow(item) {
+  document.getElementById(item).classList.remove("hidden");
+}
+function visibilityHide(item) {
+  document.getElementById(item).classList.add("hidden");
+}
