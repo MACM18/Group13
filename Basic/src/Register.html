@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport", initial-scale=1.0" />
+    <title>Sign Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      function displayMessage(Element, Message) {
+        Element.innerHTML = Message;
+        Element.classList.remove("hidden");
+      }
+      function checkPassoword() {
+        let element = document.getElementById("messageError");
+        console.log();
+        if (
+          document.getElementById("signinPassword").value ==
+          document.getElementById("signinPassword2").value
+        ) {
+          element.classList.add("hidden");
+          return true;
+        } else {
+          element.innerHTML = "Passwords do not match!";
+          element.classList.remove("hidden");
+          return false;
+        }
+      }
+      function submitData() {
+        if (checkPassoword()) {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+          var urlencoded = new URLSearchParams();
+          urlencoded.append(
+            "UserName",
+            document.getElementById("signinUserName").value
+          );
+          urlencoded.append(
+            "Password",
+            document.getElementById("signinPassword").value
+          );
+          urlencoded.append(
+            "Name",
+            document.getElementById("signinName").value
+          );
+          urlencoded.append(
+            "Phone",
+            document.getElementById("signinMobile").value
+          );
+          urlencoded.append(
+            "Email",
+            document.getElementById("signinEmail").value
+          );
+
+          var requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: urlencoded,
+            redirect: "follow",
+          };
+          fetch("Register.php", requestOptions)
+            .then((response) => response.json())
+            .then((data) => functionOne(data))
+            .catch((error) => console.log("error", error));
+        }
+        function functionOne(data) {
+          let element = document.getElementById("messageUserName");
+          console.log(data);
+          if (data["Available"] == "not") {
+            // alert("invalid UserName or Password");
+            element.innerHTML = "User name is already taken!";
+            element.classList.remove("hidden");
+            setTimeout(() => {
+              element.classList.add("hidden");
+            }, 2000);
+          }
+          if (data["Insert"] == "success") {
+            // localStorage.User_Name = data["User_Name"];
+            window.location.href = "LogIn.html";
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="w-[100vw] h-[100vh] bg-slate-300 flex flex-col items-center">
+    <div
+      class="h-full w-1/3 border-2 bg-yellow-200 rounded-lg flex flex-col justify-around items-center p-5 my-2"
+    >
+      <p class="h-fit font-bold text-4xl font-sans">Sign In</p>
+      <form
+        method="post"
+        class="w-full h-fit border-2 rounded-xl dark:bg-blue-100 p-5 border-blue-800 flex flex-col gap-5 justify-around items-center"
+      >
+        <div class="flex flex-row gap-1 w-full">
+          <label for="signinName" class="border-2 p-2 rounded-lg min-w-max"
+            >Name</label
+          >
+          <input
+            type="text"
+            name="signinN"
+            id="signinName"
+            required
+            placeholder="Your name"
+            class="w-full indent-2 rounded-lg"
+          />
+        </div>
+        <div class="flex flex-row gap-1 w-full">
+          <label for="signinEmail" class="border-2 p-2 rounded-lg min-w-max"
+            >Email</label
+          >
+          <input
+            type="email"
+            name="signinEmail"
+            id="signinEmail"
+            required
+            placeholder="email@abc.com"
+            class="w-full indent-2 rounded-lg"
+          />
+        </div>
+        <div class="flex flex-row gap-1 w-full">
+          <label for="signinMobile" class="border-2 p-2 rounded-lg min-w-max"
+            >Mobile No</label
+          >
+          <input
+            type="tel"
+            name="signinMobile"
+            id="signinMobile"
+            placeholder="011 2233445"
+            class="w-full indent-2 rounded-lg"
+          />
+        </div>
+        <div class="flex flex-row gap-1 w-full">
+          <label for="signinUserName" class="border-2 p-2 rounded-lg min-w-max"
+            >User Name</label
+          >
+          <input
+            type="text"
+            name="signinU"
+            id="signinUserName"
+            required
+            placeholder="User name"
+            class="w-full indent-2 rounded-lg"
+          />
+        </div>
+        <div id="messageUserName" class="hidden"></div>
+        <div class="flex flex-row gap-1 w-full">
+          <label for="signinPassword" class="border-2 p-2 rounded-lg min-w-max"
+            >Password</label
+          >
+          <input
+            type="password"
+            name="signinP"
+            id="signinPassword"
+            placeholder="Password"
+            pattern="^(?=.*[a-z])^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+            oninvalid="this.setCustomValidity('Password must be at least \n 8 characters \none uppercase letter, \none lowercase letter \none digit.')"
+            oninput="this.setCustomValidity('')"
+            required
+            class="w-full indent-2 rounded-lg"
+            onchange="checkPassoword()"
+          />
+        </div>
+        <div class="flex flex-row gap-1 w-full">
+          <label for="signinPassword2" class="border-2 p-2 rounded-lg min-w-max"
+            >Confirm Password</label
+          >
+          <input
+            type="password"
+            name="signinP"
+            id="signinPassword2"
+            placeholder="Password"
+            required
+            class="w-full indent-2 rounded-lg"
+            onchange="checkPassoword()"
+          />
+        </div>
+        <input
+          type="button"
+          value="Sign up"
+          class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light"
+          onclick="submitData()"
+        />
+        <div id="messageError" class="hidden">aa</div>
+      </form>
+      <div class="h-fit flex flex-col gap-5 items-center">
+        <p>Already have an account</p>
+        <a href="LogIn.html"
+          ><button
+            class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light"
+          >
+            Log In
+          </button></a
+        >
+      </div>
+    </div>
+    <div
+      class="absolute bottom-5 right-5 flex flex-row gap-2 items-center w-fit h-fit border-2 rounded-lg p-2"
+    >
+      <p class="font-semibold">Need Help</p>
+      <a href="mailto:macm@gmail.com"
+        ><button
+          class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light"
+        >
+          Contact Us
+        </button></a
+      >
+    </div>
+  </body>
+</html>
