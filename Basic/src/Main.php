@@ -7,8 +7,17 @@ if (isset($_SESSION['username']) == false) {
   $currentuser = $_SESSION['username'];
 }
 // $_SESSION['Category'] = 0;
-$category = $_SESSION['Category'];
-$task = $_SESSION['TaskId'];
+if (isset($_SESSION['Category']) == false) {
+  $category = '0';
+} else {
+  $category = $_SESSION['Category'];
+}
+if (isset($_SESSION['TaskId']) == false) {
+  $task = '0';
+} else {
+  $task = $_SESSION['TaskId'];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -159,6 +168,23 @@ $task = $_SESSION['TaskId'];
         document.getElementById('TaskAdd').removeChild(messageDiv);
       }, 3000);
     }
+    function messageFunctAddC(data) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add("absolute", "p-4", "top-0", "left-0", "rounded-lg", "shadow-lg", "border-2", "flex", "flex-auto", "justify-center", "items-center");
+
+      const message = document.createElement('p');
+      if (data["Response"] == "success") {
+        message.innerHTML = "👍 Updated";
+        location.reload();
+      } else {
+        message.innerHTML = "😿 Failed";
+      }
+      messageDiv.appendChild(message);
+      document.getElementById('CategoryAdd').appendChild(messageDiv);
+      setTimeout(() => {
+        document.getElementById('CategoryAdd').removeChild(messageDiv);
+      }, 3000);
+    }
     function DeleteData(params) {
       let form = document.getElementById(params);
       // console.log(form.elements["Category"].value);
@@ -204,6 +230,29 @@ $task = $_SESSION['TaskId'];
         .then(data => messageFunctAdd(data))
         .catch(error => console.log('error', error));
     }
+    function AddCategory() {
+      let form = document.getElementById('FormAddCategory');
+
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+      var urlencoded = new URLSearchParams();
+      urlencoded.append("Title", form.elements["CTitle"].value);
+      urlencoded.append("Emoji", form.elements["CEmoji"].value);
+      urlencoded.append("position", form.elements["CPosition"].value);
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+      };
+
+      fetch("addCategory.php", requestOptions)
+        .then(response => response.json())
+        // .then(data => console.log(data))
+        .then(data => messageFunctAddC(data))
+        .catch(error => console.log('error', error));
+    }
   </script>
   <script src="Visibility.js"></script>
 </head>
@@ -222,7 +271,7 @@ $task = $_SESSION['TaskId'];
       <div class="p-2 w-fit h-fit border-2 rounded-full" onClick=visibilityShow("TaskAdd")>
         <p>+ New task</p>
       </div>
-      <div class="p-2 w-fit h-fit border-2 rounded-full" onClick="newCategory()">
+      <div class="p-2 w-fit h-fit border-2 rounded-full" onClick=visibilityShow("CategoryAdd")>
         <p>+ New Category</p>
       </div>
     </div>
@@ -262,7 +311,8 @@ $task = $_SESSION['TaskId'];
           <input type="button" value="Colors" id="colorButton"
             class="p-4 w-full font-semibold rounded-l-full hover:text-right border-2" onClick=colorsMenu()>
           <input type="button" value="Category" id="categoryButton"
-            class="p-4 w-full font-semibold rounded-l-full hover:text-right border-2" onClick=categoriesMenu()>
+            class="p-4 w-full font-semibold rounded-l-full hover:text-right border-2"
+            onClick=visibilityShow("CategoryEdit")>
           <input type="button" value="DarkMode" id="darkButton"
             class="p-4 w-full font-semibold rounded-l-full hover:text-right border-2" onClick=darkMode()>
           <input type="button" value="Exit" id="exitButton"
@@ -273,7 +323,7 @@ $task = $_SESSION['TaskId'];
         class="w-full h-full bg-blue-300 dark:bg-blue-800 rounded-xl flex flex-col gap-5 p-4 border-2 border-blue-800">
         <!-- Tasks -->
         <div class="w-full h-full">
-          <div class="flex flex-col gap-5 overflow-y-auto overflow-x-hidden">
+          <div class=" w-full h-full p-4 flex flex-col gap-5 overflow-y-auto overflow-x-hidden">
             <?php
             if ($category != 0) {
               $queryTask = "Select * from task where User_Name='$currentuser' and Category=$category order by date,time";
@@ -281,12 +331,13 @@ $task = $_SESSION['TaskId'];
               $queryTask = "Select * from task where User_Name='$currentuser' order by date,time";
             }
             $resultTask = mysqli_query($connection, $queryTask);
+            mysqli_data_seek($resultTask, 0);
             while ($arrayTask = mysqli_fetch_array($resultTask)) {
               ?>
               <div class="w-full h-fit flex flex-col items-end">
                 <div class="w-full rounded-xl border-2 rounded-br-none flex flex-row gap-4 items-center p-4">
-                  <div onClick="SelectFun1(<?php echo $arrayTask["status"]; ?>,<?php echo $arrayTask["id"]; ?>)"
-                    class="rounded-full w-10 h-10 flex justify-around items-center">
+                  <div onClick="SelectFun1(<?php echo $arrayTask["status"]; ?>,
+              <?php echo $arrayTask["id"]; ?>)" class="rounded-full w-10 h-10 flex justify-around items-center">
                     <p id="Tick">
                       <?php if ($arrayTask["status"] == true) {
                         echo "✔️";
@@ -340,7 +391,7 @@ $task = $_SESSION['TaskId'];
           <div class="flex flex-row gap-1 w-full"><label for="TaskTitle"
               class="border-2 p-2 rounded-lg min-w-max">Task</label><input type="text" name="Task" id="TaskTitle"
               class="w-full indent-2 rounded-lg" value="<?php echo $dataEdit['task'] ?>"></div>
-          <div class="w-full flex flex-row gap-2">
+          <div class="w-full flex flex-row gap-2 ">
             <div class="flex flex-row gap-1 w-full"><label for=" TaskDate"
                 class="border-2 p-2 rounded-lg min-w-max">Date</label><input type="date" name="Date" id="TaskDate"
                 class="w-full indent-2 rounded-lg " value="<?php echo $dataEdit['Date'] ?>"></div>
@@ -352,6 +403,7 @@ $task = $_SESSION['TaskId'];
               class="border-2 p-2 rounded-lg min-w-max">Category</label><select name="Category" id="TaskCategory"
               class="w-full indent-2 rounded-lg">
               <?php
+              mysqli_data_seek($resultEdit2, 0);
               while ($dataEdit2 = mysqli_fetch_array($resultEdit2)) {
                 echo "<option>" . $dataEdit2['Title'] . "</option>";
               }
@@ -398,6 +450,7 @@ $task = $_SESSION['TaskId'];
               class="border-2 p-2 rounded-lg min-w-max">Category</label><select name="Category" id="TaskCategory"
               class="w-full indent-2 rounded-lg">
               <?php
+              mysqli_data_seek($resultAdd2, 0);
               while ($dataAdd2 = mysqli_fetch_array($resultAdd2)) {
                 echo "<option>" . $dataAdd2['Title'] . "</option>";
               }
@@ -411,6 +464,97 @@ $task = $_SESSION['TaskId'];
       </div>
     </div>
   </div>
+  <!-- Add Category -->
+  <div id="CategoryAdd" class="hidden absolute top-20 left-28 w-3/4 h-5/6 backdrop-blur-xl">
+    <?php
+
+    $queryAddC2 = "SELECT position FROM category WHERE User_Name='$currentuser' ORDER BY position";
+    $resultAddC2 = mysqli_query($connection, $queryAddC2);
+    $dataAddC2 = mysqli_fetch_array($resultAddC2);
+    ?>
+    <div class=" w-full h-full border-2 rounded-lg p-5 flex flex-row">
+      <div class="w-1/6 h-full"></div>
+      <div class="w-5/6 h-full flex flex-row">
+        <div class="w-10 h-10 absolute top-0 right-0 flex flex-auto justify-center items-center"
+          onClick=visibilityHide("CategoryAdd")>x</div>
+        <form class="w-full h-full p-5 flex flex-col justify-around items-end" id="FormAddCategory">
+          <div class="flex flex-row gap-1 w-full"><label for="CTitle"
+              class="border-2 p-2 rounded-lg min-w-max">Title</label><input type="text" name="CTitle" id="CTitle"
+              class="w-full indent-2 rounded-lg"></div>
+          <div class="w-full flex flex-row gap-2">
+            <div class="flex flex-row gap-1 w-full"><label for=" CEmoji"
+                class="border-2 p-2 rounded-lg min-w-max">Emoji</label><input type="text" name="CEmoji" id="CEmoji"
+                maxlength="5" class="w-full indent-2 rounded-lg "></div>
+            <div class="flex flex-row gap-1 w-full"><label for="CPosition"
+                class="border-2 p-2 rounded-lg min-w-max">position</label><input type="number" name="CPosition"
+                id="CPosition" class="w-full indent-2 rounded-lg"></div>
+          </div>
+          <p class="self-start">Current Positions</p>
+          <div class="flex flex-row gap-1 w-full overflow-auto">
+            <?php
+            mysqli_data_seek($resultAddC2, 0);
+            while ($dataAddC2 = mysqli_fetch_array($resultAddC2)) {
+              echo "<div class='p-2 w-fit h-fit border-2 rounded-lg'>" . $dataAddC2['position'] . "</div>";
+            }
+            ?>
+          </div>
+          <div class="flex flex-row gap-1 w-full justify-end">
+            <input type="button" value="Save" class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light"
+              onclick="AddCategory()">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- Category Edit -->
+  <div id="CategoryEdit"
+    class="absolute top-0 right-0 backdrop-blur-md w-5/12 h-screen hidden flex flex-col gap-5 overflow-y-auto p-2 border-2 rounded-lg">
+    <div class="w-10 h-10 absolute top-0 left-0 flex flex-auto justify-center items-center"
+      onClick=visibilityHide("CategoryEdit")>x</div>
+    <div class="flex flex-col gap-3 overflow-y-auto overflow-x-hidden">
+      <div class="w-full h-fit p-4 border-2 rounded-lg text-center text-3xl font-bold">📃 Categories</div>
+      <?php
+      $queryCat = "Select * from category where User_Name='$currentuser' order by position";
+      $resultCat = mysqli_query($connection, $queryCat);
+      mysqli_data_seek($resultCat, 0);
+      while ($arrayCat = mysqli_fetch_array($resultCat)) {
+        ?>
+        <form method="post" class="w-full h-fit flex flex-col p-2 gap-2 border-2 rounded-lg"
+          id="<?php echo $arrayCat['id']; ?>">
+          <div class="w-full h-fit flex flex-row">
+            <input type="text" maxlength="5"
+              class="text-center w-20 h-20 border-2 flex text-4xl flex-auto justify-center items-center rounded-xl"
+              placeholder="<?php echo $arrayCat['Emoji']; ?>" name="CatEmoji" id="CatEmoji">
+            <div class="flex flex-col gap-2 px-2">
+              <div class="flex flex-row gap-2 w-full h-fit">
+                <label for="CatTitle" class="border-2 p-2 rounded-lg min-w-max">Title</label><input type="text"
+                  name="CatTitle" id="CatTitle" class=" w-full indent-2 rounded-lg"
+                  value="<?php echo $arrayCat['Title']; ?>">
+              </div>
+              <div class="flex flex-row gap-5">
+                <div class="flex flex-row gap-2 w-full h-fit">
+                  <label for=" CatPosition" class="border-2 p-2 rounded-lg min-w-max">
+                    Position</label><input type="text" name="CatPosition" id="CatPosition"
+                    class="w-full indent-2 rounded-lg" value="<?php echo $arrayCat['position']; ?>">
+                </div>
+
+                <input type="checkbox" name="CatVisibility" id="CatVisibility" <?php
+                if ($arrayCat['visibility'] == 1) {
+                  echo "checked";
+                }
+                ?> class="">
+              </div>
+            </div>
+          </div>
+          <div class="w-full h-fit flex flex-row justify-around">
+            <input type="button" value="Delete" class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light">
+            <input type="button" value="Update" class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light">
+          </div>
+        </form>
+        <?php
+      }
+      ?>
+    </div>
 </body>
 
 </html>

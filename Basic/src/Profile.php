@@ -12,6 +12,7 @@ $data = mysqli_fetch_assoc($result);
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="JavaScript/Visibility.js"></script>
+    <script src="Visibility.js"></script>
 </head>
 
 <body>
