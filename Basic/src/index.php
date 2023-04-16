@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'Connection.php';
+require 'PHP\Connection.php';
 if (isset($_SESSION['username']) == false) {
   header('Location: LogIn.html');
 } else {
@@ -28,250 +28,68 @@ if (isset($_SESSION['TaskId']) == false) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <title>Task Manager</title>
-  <script>
-    function exit() {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', 'clear-session.php', true);
-      xhr.send();
-      window.location.href = "LogIn.html";
-    }
-
-    function selectCategory(element) {
-      // var subDiv = element.querySelector('#ID');
-      // console.log(element);
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-      var urlencoded = new URLSearchParams();
-      urlencoded.append("Category", element);
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: 'follow'
-      };
-
-      fetch("selectCategory.php", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-      location.reload();
-    }
-
-    function selectTask(element) {
-      console.log(element);
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-      var urlencoded = new URLSearchParams();
-      urlencoded.append("TaskId", element);
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: 'follow'
-      };
-
-      fetch("selectTask.php", requestOptions)
-        .then(response => response.text())
-        // .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-      setTimeout(() => {
-        const section = document.getElementById("TaskEdit");
-        if (section.classList.contains('hidden')) {
-          section.classList.remove("hidden");
-        }
-      }, 1000)
-    }
-    function SelectFun1(status, id) {
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-      var urlencoded = new URLSearchParams();
-      urlencoded.append("status", status);
-      urlencoded.append("id", id);
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: 'follow'
-      };
-
-      fetch("updateTaskStatus.php", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-      location.reload();
-    }
-    // function saveData(params) {
-    //   localStorage.setItem("Tasks", JSON.stringify(params));
-    // }
-    function UpdateData(params) {
-      let form = document.getElementById(params);
-      // console.log(form.elements["Category"].value);
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-      var urlencoded = new URLSearchParams();
-      urlencoded.append("task", form.elements["Task"].value);
-      urlencoded.append("Date", form.elements["Date"].value);
-      urlencoded.append("time", form.elements["Time"].value);
-      urlencoded.append("Category", form.elements["Category"].value);
-      urlencoded.append("id", params);
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: 'follow'
-      };
-
-      fetch("updateTask.php", requestOptions)
-        .then(response => response.json())
-        .then(data => messageFunct(data))
-        .catch(error => console.log('error', error));
-    }
-    function messageFunct(data) {
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add("absolute", "p-4", "top-0", "left-0", "rounded-lg", "shadow-lg", "border-2", "flex", "flex-auto", "justify-center", "items-center");
-
-      const message = document.createElement('p');
-      if (data["Response"] == "success") {
-        message.innerHTML = "👍 Updated";
-        location.reload();
-      } else {
-        message.innerHTML = "😿 Failed";
-      }
-      messageDiv.appendChild(message);
-      document.getElementById('TaskEdit').appendChild(messageDiv);
-      setTimeout(() => {
-        document.getElementById('TaskEdit').removeChild(messageDiv);
-      }, 3000);
-    }
-    function messageFunctAdd(data) {
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add("absolute", "p-4", "top-0", "left-0", "rounded-lg", "shadow-lg", "border-2", "flex", "flex-auto", "justify-center", "items-center");
-
-      const message = document.createElement('p');
-      if (data["Response"] == "success") {
-        message.innerHTML = "👍 Updated";
-        location.reload();
-      } else {
-        message.innerHTML = "😿 Failed";
-      }
-      messageDiv.appendChild(message);
-      document.getElementById('TaskAdd').appendChild(messageDiv);
-      setTimeout(() => {
-        document.getElementById('TaskAdd').removeChild(messageDiv);
-      }, 3000);
-    }
-    function messageFunctAddC(data) {
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add("absolute", "p-4", "top-0", "left-0", "rounded-lg", "shadow-lg", "border-2", "flex", "flex-auto", "justify-center", "items-center");
-
-      const message = document.createElement('p');
-      if (data["Response"] == "success") {
-        message.innerHTML = "👍 Updated";
-        location.reload();
-      } else {
-        message.innerHTML = "😿 Failed";
-      }
-      messageDiv.appendChild(message);
-      document.getElementById('CategoryAdd').appendChild(messageDiv);
-      setTimeout(() => {
-        document.getElementById('CategoryAdd').removeChild(messageDiv);
-      }, 3000);
-    }
-    function DeleteData(params) {
-      let form = document.getElementById(params);
-      // console.log(form.elements["Category"].value);
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-      var urlencoded = new URLSearchParams();
-      urlencoded.append("id", params);
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: 'follow'
-      };
-
-      fetch("deleteTask.php", requestOptions)
-        .then(response => response.json())
-        .then(data => messageFunct(data))
-        .catch(error => console.log('error', error));
-    }
-    function AddData() {
-      let form = document.getElementById('FormAddTask');
-      // console.log(form.elements["Category"].value);
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-      var urlencoded = new URLSearchParams();
-      urlencoded.append("task", form.elements["Task"].value);
-      urlencoded.append("Date", form.elements["Date"].value);
-      urlencoded.append("time", form.elements["Time"].value);
-      urlencoded.append("Category", form.elements["Category"].value);
-
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: 'follow'
-      };
-
-      fetch("addTask.php", requestOptions)
-        .then(response => response.json())
-        .then(data => messageFunctAdd(data))
-        .catch(error => console.log('error', error));
-    }
-    function AddCategory() {
-      let form = document.getElementById('FormAddCategory');
-
-      var myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
-      var urlencoded = new URLSearchParams();
-      urlencoded.append("Title", form.elements["CTitle"].value);
-      urlencoded.append("Emoji", form.elements["CEmoji"].value);
-      urlencoded.append("position", form.elements["CPosition"].value);
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: urlencoded,
-        redirect: 'follow'
-      };
-
-      fetch("addCategory.php", requestOptions)
-        .then(response => response.json())
-        // .then(data => console.log(data))
-        .then(data => messageFunctAddC(data))
-        .catch(error => console.log('error', error));
-    }
-  </script>
-  <script src="Visibility.js"></script>
+  <!-- <script src="dark.js"> -->
+  <!-- </script> -->
+  <!-- <script src="JavaScript\script.js"></script> -->
+  <script src="JavaScript/Visibility.js"></script>
+  <script src="JavaScript/MainScripts.js"></script>
 </head>
 
 <body>
-  <div class="h-screen">
-    <object data="Profile.php" class="absolute top-0 right-0 w-fit h-full"></object>
+  <script>
+    window.addEventListener("load", function () {
+      document.querySelector("#Loading").style.display = "none";
+    });
+  </script>
+  <div id="Loading">
+    <h1
+      class="absolute top-0 left-0 text-3xl w-screen h-screen text-amber-600 text-center flex flex-auto justify-center items-center z-50 bg-white font-bold font-sans underline">
+      Loading!</h1>
+    <p>You will be redirected!</p>
+  </div>
+  <div class="h-screen" id="background">
+    <!-- <object data="Profile.php" class="absolute top-0 right-0 w-fit h-full"></object> -->
+    <!-- Profile -->
+    <?php
+    $queryP = "select * from user where User_Name='$currentuser'";
+    $resultP = mysqli_query($connection, $queryP);
+    $dataP = mysqli_fetch_assoc($resultP);
+    ?>
+    <div id="User_Profile"
+      class="absolute top-1 right-0 py-3 px-1 hover:cursor-pointer bg-amber-600 border-2 border-white dark:bg-black rounded-l-xl"
+      onClick=visibilityToggle("show","User_Profile","User_Profile_Max")>
+      ◀️
+    </div>
+    <div id="User_Profile_Max" onClick=visibilityToggle("hide","User_Profile","User_Profile_Max")
+      class=" absolute top-1 right-1 bg-amber-600 w-fit h-fit p-2 border-2 rounded-lg shadow-lg hover:cursor-pointer hidden">
+      <div id="User_Profile_Max_Inside"
+        class="p-2 border-2 w-fit h-fit flex flex-col justify-around rounded-lg items-center">
+        <div class="w-fit h-fit rounded-lg border-2">
+          <img id="User_Profile_Max_Image" class=" object-cover w-20 h-20 rounded-lg"
+            alt="<?php echo $dataP['image'] ?>" src="images\<?php echo $dataP['image'] ?>.jpg">
+        </div>
+        <div>
+          <?php echo $dataP['User_Name'] ?>
+        </div>
+        <div class="max-w-40">
+          <?php echo $dataP['Email'] ?>
+        </div>
+      </div>
+    </div>
+    <!-- ADD -->
     <div id="AddButton"
-      class="absolute bottom-8 right-8 p-5 h-5 w-5  border-2 rounded-lg flex flex-auto justify-center items-center"
+      class="absolute bottom-10 right-10 bg-amber-600 p-5 h-5 w-5 border-2 rounded-lg flex flex-auto justify-center items-center"
       onClick=visibilityToggle("show","AddButton","AddButton_Max")>
       <p>+</p>
     </div>
     <div id="AddButton_Max"
-      class="absolute bottom-8 right-8 p-2 w-fit h-fit rounded-lg flex flex-col justify-around border-2 gap-2 hidden"
+      class="absolute bottom-8 right-8 p-2  w-fit h-fit rounded-lg flex flex-col justify-around border-2 gap-2 hidden"
       onClick=visibilityToggle("hide","AddButton","AddButton_Max")>
-      <div class="p-2 w-fit h-fit border-2 rounded-full" onClick=visibilityShow("TaskAdd")>
+      <div id="newTask" class="p-2 bg-amber-600 w-fit h-fit border-2 rounded-full" onClick=visibilityShow("TaskAdd")>
         <p>+ New task</p>
       </div>
-      <div class="p-2 w-fit h-fit border-2 rounded-full" onClick=visibilityShow("CategoryAdd")>
+      <div id="newCategory" class="p-2 bg-amber-600 backdrop-blur-lg w-fit h-fit border-2 rounded-full"
+        onClick=visibilityShow("CategoryAdd")>
         <p>+ New Category</p>
       </div>
     </div>
@@ -286,13 +104,13 @@ if (isset($_SESSION['TaskId']) == false) {
             while ($array = mysqli_fetch_array($result)) {
               ?>
               <div id=" categoryBox"
-                class=" rounded-xl border-2 shadow-lg hover:shadow-sm flex flex-col items-center justify-around w-fit h-fit gap-2 p-2"
+                class=" rounded-xl bg-amber-600 border-2 shadow-lg hover:shadow-sm flex flex-col items-center justify-around w-fit h-fit gap-2 p-2"
                 onclick="selectCategory(<?php echo $array[2]; ?>)">
                 <div id="cBTitle" class="font-medium text-lg">
                   <?php echo $array[0]; ?>
                 </div>
                 <div id="cBEmoji"
-                  class="w-20 h-20 border-2 flex text-4xl flex-auto justify-center items-center rounded-xl">
+                  class="w-20 h-20 border-2 border-amber-600 bg-white flex text-4xl flex-auto justify-center items-center rounded-xl">
                   <?php echo $array[1]; ?>
                 </div>
               </div>
@@ -309,14 +127,14 @@ if (isset($_SESSION['TaskId']) == false) {
         <div id="Title" class="p-2 text-center w-full h-fit font-bold text-2xl">Task Manager</div>
         <div id="NavBar_Buttons" class="flex flex-col w-full h-full justify-around">
           <input type="button" value="Colors" id="colorButton"
-            class="p-4 w-full font-semibold rounded-l-full hover:text-right border-2" onClick=colorsMenu()>
+            class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2" onClick=colorsMenu()>
           <input type="button" value="Category" id="categoryButton"
-            class="p-4 w-full font-semibold rounded-l-full hover:text-right border-2"
+            class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2"
             onClick=visibilityShow("CategoryEdit")>
           <input type="button" value="DarkMode" id="darkButton"
-            class="p-4 w-full font-semibold rounded-l-full hover:text-right border-2" onClick=darkMode()>
+            class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2" onClick=dark("red")>
           <input type="button" value="Exit" id="exitButton"
-            class="p-4 w-full font-semibold rounded-l-full hover:text-right border-2" onClick=exit()>
+            class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2" onClick=exit()>
         </div>
       </div>
       <div id="TaskArea"
@@ -335,9 +153,10 @@ if (isset($_SESSION['TaskId']) == false) {
             while ($arrayTask = mysqli_fetch_array($resultTask)) {
               ?>
               <div class="w-full h-fit flex flex-col items-end">
-                <div class="w-full rounded-xl border-2 rounded-br-none flex flex-row gap-4 items-center p-4">
+                <div class="w-full rounded-xl border-2 bg-amber-600 rounded-br-none flex flex-row gap-4 items-center p-4">
                   <div onClick="SelectFun1(<?php echo $arrayTask["status"]; ?>,
-              <?php echo $arrayTask["id"]; ?>)" class="rounded-full w-10 h-10 flex justify-around items-center">
+              <?php echo $arrayTask["id"]; ?>)"
+                    class="rounded-full bg-amber-600 border-white border-2 w-10 h-10 flex justify-around items-center">
                     <p id="Tick">
                       <?php if ($arrayTask["status"] == true) {
                         echo "✔️";
@@ -345,13 +164,14 @@ if (isset($_SESSION['TaskId']) == false) {
                       ?>
                     </p>
                   </div>
-                  <div class="w-full h-full" onClick="selectTask(<?php echo $arrayTask["id"]; ?>)" <p
-                    class="text-xl indent-5 ">
+                  <div class="w-full h-full text-amber-600 bg-white rounded-lg text-xl indent-5"
+                    onClick="selectTask(<?php echo $arrayTask["id"]; ?>)" <p>
                     <?php echo $arrayTask["task"]; ?>
                     </p>
                   </div>
                 </div>
-                <div class="w-fit px-3 h-fit rounded-b-xl flex flex-row gap-3 border-2 border-t-0 ">
+                <div
+                  class="w-fit px-3 h-fit text-amber-600 bg-white rounded-b-xl flex flex-row gap-3 border-2 border-t-0 ">
                   <div>Date :
                     <?php echo $arrayTask["Date"]; ?>
                   </div>
@@ -547,8 +367,10 @@ if (isset($_SESSION['TaskId']) == false) {
             </div>
           </div>
           <div class="w-full h-fit flex flex-row justify-around">
-            <input type="button" value="Delete" class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light">
-            <input type="button" value="Update" class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light">
+            <input type="button" value="Delete" class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light"
+              onclick=deleteCategory(<?php echo $arrayCat['id']; ?>)>
+            <input type="button" value="Update" class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light"
+              onclick=updateCategory(<?php echo $arrayCat['id']; ?>)>
           </div>
         </form>
         <?php

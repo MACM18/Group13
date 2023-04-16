@@ -27,7 +27,7 @@
           body: urlencoded,
           redirect: "follow",
         };
-        fetch("LogIn.php", requestOptions)
+        fetch("../PHP/LogIn.php", requestOptions)
           .then((response) => response.json())
           .then((data) => functionOne(data))
           .catch((error) => console.log("error", error));
@@ -43,7 +43,7 @@
           }, 2000);
         } else {
           // localStorage.User_Name = data["User_Name"];
-          window.location.href = "Main.php";
+          window.location.href = "../../index.php";
         }
       }
     </script>
@@ -55,7 +55,6 @@
       <p class="h-fit font-bold text-4xl font-sans">Log In</p>
       <form
         method="post"
-        action="/Basic/src/Login.php"
         class="w-full h-fit border-2 rounded-xl dark:bg-blue-100 p-5 border-blue-800 flex flex-col gap-5 justify-around items-center"
       >
         <div class="flex flex-row gap-1 w-full">
@@ -97,7 +96,7 @@
       </form>
       <div class="h-fit flex flex-col gap-5 items-center">
         <p>Don't have an account</p>
-        <a href="Register.html"
+        <a href="../Html/Register.html"
           ><button
             class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light"
           >
