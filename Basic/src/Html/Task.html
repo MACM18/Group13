@@ -1,0 +1,167 @@
+<html>
+  <head>
+    <script>
+      function SelectFun1(status, id) {
+        console.log(id);
+        console.log(status);
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("status", status);
+        urlencoded.append("id", id);
+
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: "follow",
+        };
+
+        fetch("updateTaskStatus.php", requestOptions)
+          .then((response) => response.text())
+          .then((result) => console.log(result))
+          .catch((error) => console.log("error", error));
+        // location.reload();
+      }
+      const myData = JSON.parse(localStorage.getItem("Tasks"));
+      console.log(myData[0]);
+
+      // Get the JSON data
+      function test() {
+        // Get the container element
+        const container = document.createElement("div");
+        container.classList.add(
+          "bg-blue-300",
+          "h-full",
+          "w-full",
+          "rounded-lg",
+          "p-5",
+          "flex",
+          "flex-col",
+          "items-end",
+          "overflow-y-auto"
+        );
+
+        // Loop through the data and create HTML elements
+        myData.forEach((item) => {
+          // Create a div element
+          const mainDiv = document.createElement("div");
+          mainDiv.classList.add(
+            "w-full",
+            "h-fit",
+            "border-2",
+            "rounded-lg",
+            "rounded-br-none",
+            "p-4",
+            "flex",
+            "flex-row",
+            "gap-2",
+            "items-center"
+          );
+          const roundButton = document.createElement("div");
+          roundButton.classList.add(
+            "rounded-full",
+            "w-10",
+            "h-10",
+            "flex",
+            "justify-around",
+            "items-center"
+          );
+          roundButton.onclick(SelectFun1(item.status, item.id));
+          const task = document.createElement("div");
+          task.classList.add("w-full", "h-full");
+          task.innerHTML = `<p>${item.task}</p>`;
+          const bottomDiv = document.createElement("div");
+          const Tick = document.createElement("p");
+          const dateDiv = document.createElement("div");
+          const timeDiv = document.createElement("div");
+          task.classList.add("w-full", "h-fit");
+          bottomDiv.classList.add(
+            "w-fit",
+            "px-3",
+            "h-fit",
+            "rounded-b-xl",
+            "flex",
+            "flex-row",
+            "gap-3",
+            "border-2",
+            "border-t-0"
+          );
+          if (`${item.status}`) {
+            Tick.innerHTML = "✔️";
+          }
+          dateDiv.innerHTML = `${item.Date}`;
+          timeDiv.innerHTML = `${item.time}`;
+
+          // Set the innerHTML of the div to the data
+          //   mainDiv.innerHTML = `<p class="text-xl indent-5">Name: ${item.User_Name}</p><p>Age: ${item.Date}</p>`;
+          bottomDiv.appendChild(dateDiv);
+          bottomDiv.append("|");
+          bottomDiv.appendChild(timeDiv);
+          roundButton.appendChild(Tick);
+          mainDiv.appendChild(roundButton);
+          mainDiv.appendChild(task);
+          // Append the div to the container
+          container.appendChild(mainDiv);
+          container.appendChild(bottomDiv);
+        });
+        document.getElementById("aaa").appendChild(container);
+      }
+      document.addEventListener("DOMContentLoaded", test);
+
+      function fetchData(selection) {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("Category", status);
+        urlencoded.append("id", id);
+
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: "follow",
+        };
+
+        fetch("updateTaskStatus.php", requestOptions)
+          .then((response) => response.text())
+          // .then(result => console.log(result))
+          .catch((error) => console.log("error", error));
+        location.reload();
+      }
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body>
+    <div
+      class="flex flex-col h-screen gap-5 overflow-y-auto overflow-x-hidden"
+      id="aaa"
+    >
+      <div class="w-full h-fit flex flex-col items-end">
+        <div
+          class="w-full rounded-xl border-2 rounded-br-none flex flex-row gap-4 items-center p-4"
+        >
+          <div
+            onClick="SelectFun1()"
+            class="rounded-full w-10 h-10 flex justify-around items-center"
+          >
+            <p id="Tick"></p>
+          </div>
+          <div class="w-full h-full" onClick="TaskEditFun()">
+            <p class="text-xl indent-5"></p>
+          </div>
+        </div>
+        <div
+          class="w-fit px-3 h-fit rounded-b-xl flex flex-row gap-3 border-2 border-t-0"
+        >
+          <div>Date :</div>
+          |
+          <div id="container">Time :</div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

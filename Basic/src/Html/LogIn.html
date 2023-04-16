@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport", initial-scale=1.0" />
+    <title>Log In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      function submitData() {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+        var urlencoded = new URLSearchParams();
+        urlencoded.append(
+          "UserName",
+          document.getElementById("loginUserName").value
+        );
+        urlencoded.append(
+          "Password",
+          document.getElementById("loginPassword").value
+        );
+
+        var requestOptions = {
+          method: "POST",
+          headers: myHeaders,
+          body: urlencoded,
+          redirect: "follow",
+        };
+        fetch("../PHP/LogIn.php", requestOptions)
+          .then((response) => response.json())
+          .then((data) => functionOne(data))
+          .catch((error) => console.log("error", error));
+      }
+      function functionOne(data) {
+        if (data == "invalid") {
+          // alert("invalid UserName or Password");
+          const element = document.getElementById("message");
+          element.innerHTML = "Invalid UserName or Password";
+          element.classList.remove("hidden");
+          setTimeout(() => {
+            element.classList.add("hidden");
+          }, 2000);
+        } else {
+          // localStorage.User_Name = data["User_Name"];
+          window.location.href = "../../index.php";
+        }
+      }
+    </script>
+  </head>
+  <body class="w-[100vw] h-[100vh] bg-slate-300 flex flex-col items-center">
+    <div
+      class="h-full w-1/3 border-2 bg-yellow-200 rounded-lg flex flex-col justify-around items-center p-5 my-2"
+    >
+      <p class="h-fit font-bold text-4xl font-sans">Log In</p>
+      <form
+        method="post"
+        class="w-full h-fit border-2 rounded-xl dark:bg-blue-100 p-5 border-blue-800 flex flex-col gap-5 justify-around items-center"
+      >
+        <div class="flex flex-row gap-1 w-full">
+          <label for="loginUserName" class="border-2 p-2 rounded-lg min-w-max"
+            >User Name</label
+          >
+          <input
+            type="text"
+            name="loginU"
+            id="loginUserName"
+            required
+            placeholder="User name"
+            class="w-full indent-2 rounded-lg"
+          />
+        </div>
+        <div class="flex flex-row gap-1 w-full">
+          <label for="loginPassword" class="border-2 p-2 rounded-lg min-w-max"
+            >Password</label
+          >
+          <input
+            type="password"
+            name="loginP"
+            id="loginPassword"
+            placeholder="Password"
+            pattern="^(?=.*[a-z])^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+            oninvalid="this.setCustomValidity('Password must be at least \n 8 characters \none uppercase letter, \none lowercase letter \none digit.')"
+            oninput="this.setCustomValidity('')"
+            required
+            class="w-full indent-2 rounded-lg"
+          />
+        </div>
+        <input
+          type="button"
+          value="Log In"
+          class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light"
+          onclick="submitData()"
+        />
+        <div id="message" class="hidden"></div>
+      </form>
+      <div class="h-fit flex flex-col gap-5 items-center">
+        <p>Don't have an account</p>
+        <a href="../Html/Register.html"
+          ><button
+            class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light"
+          >
+            Sign up
+          </button></a
+        >
+      </div>
+    </div>
+    <div
+      class="absolute bottom-5 right-5 flex flex-row gap-2 items-center w-fit h-fit border-2 rounded-lg p-2"
+    >
+      <p class="font-semibold">Need Help</p>
+      <a href="mailto:macm@gmail.com"
+        ><button
+          class="border-2 p-2 rounded-lg shadow-lg hover:shadow-none font-light"
+        >
+          Contact Us
+        </button></a
+      >
+    </div>
+  </body>
+</html>
