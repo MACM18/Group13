@@ -25,7 +25,6 @@ if (isset($_SESSION['color']) == false) {
 } else {
   $color = $_SESSION['color'];
 }
-// echo $color;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +33,7 @@ if (isset($_SESSION['color']) == false) {
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
   <title>Task Manager</title>
   <!-- <script src="dark.js"> -->
   <!-- </script> -->
@@ -47,7 +46,7 @@ if (isset($_SESSION['color']) == false) {
       document.querySelector("#Loading").style.display = "none";
     });
   </script>
-  <!-- <link rel="stylesheet" href="src/CSS/Styles.css"> -->
+  <link rel="stylesheet" href="src/CSS/Styles.css">
 </head>
 
 <body>
@@ -152,6 +151,7 @@ if (isset($_SESSION['color']) == false) {
             onClick=exit()>
         </div>
       </div>
+      <!-- ColorsMenu -->
       <div id="ColorsMenu"
         class="absolute top-0 right-0 backdrop-blur-md w-5/12 h-screen flex flex-col gap-5 hidden overflow-y-auto p-2 border-2 rounded-lg">
         <div
@@ -477,7 +477,7 @@ if (isset($_SESSION['color']) == false) {
       }
       ?>
     </div>
-    <!-- ColorsMenu -->
+
 </body>
 
 </html>
