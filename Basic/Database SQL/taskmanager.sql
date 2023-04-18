@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 16, 2023 at 02:46 PM
+-- Generation Time: Apr 18, 2023 at 04:05 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.3.0
 
@@ -53,6 +53,25 @@ INSERT INTO `category` (`id`, `User_Name`, `Title`, `Emoji`, `position`, `visibi
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `color`
+--
+
+CREATE TABLE `color` (
+  `id` int(11) NOT NULL,
+  `User_Name` varchar(20) COLLATE utf8mb4_bin DEFAULT NULL,
+  `color` varchar(10) COLLATE utf8mb4_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Dumping data for table `color`
+--
+
+INSERT INTO `color` (`id`, `User_Name`, `color`) VALUES
+(1, 'aaaaa', 'purple');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `task`
 --
 
@@ -73,7 +92,7 @@ CREATE TABLE `task` (
 INSERT INTO `task` (`id`, `User_Name`, `task`, `Date`, `time`, `Category`, `status`) VALUES
 (2, 'aaaaa', 'Task1', '2023-04-12', '11:21:00', 4, 0),
 (3, 'aaaaa', 'Task2', '2023-04-15', '11:21:00', 5, 0),
-(4, 'aaaaa', 'Task34', '2023-04-12', '11:10:00', 6, 0),
+(4, 'aaaaa', 'Task34', '2023-04-12', '11:10:00', 6, 1),
 (13, 'aaaaa', 'Task34a', '2023-04-20', '22:14:00', 4, 0),
 (14, 'aaaaa', 'Task34aa', '2023-04-13', '20:26:00', 6, 1);
 
@@ -112,6 +131,13 @@ ALTER TABLE `category`
   ADD KEY `User_Name` (`User_Name`);
 
 --
+-- Indexes for table `color`
+--
+ALTER TABLE `color`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `User_Name` (`User_Name`);
+
+--
 -- Indexes for table `task`
 --
 ALTER TABLE `task`
@@ -136,6 +162,12 @@ ALTER TABLE `category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
+-- AUTO_INCREMENT for table `color`
+--
+ALTER TABLE `color`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `task`
 --
 ALTER TABLE `task`
@@ -150,6 +182,12 @@ ALTER TABLE `task`
 --
 ALTER TABLE `category`
   ADD CONSTRAINT `category_ibfk_1` FOREIGN KEY (`User_Name`) REFERENCES `user` (`User_Name`);
+
+--
+-- Constraints for table `color`
+--
+ALTER TABLE `color`
+  ADD CONSTRAINT `color_ibfk_1` FOREIGN KEY (`User_Name`) REFERENCES `user` (`User_Name`);
 
 --
 -- Constraints for table `task`
