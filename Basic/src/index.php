@@ -33,6 +33,7 @@ if (isset($_SESSION['TaskId']) == false) {
   <!-- <script src="JavaScript\script.js"></script> -->
   <script src="JavaScript/Visibility.js"></script>
   <script src="JavaScript/MainScripts.js"></script>
+  <script src="JavaScript/dark2.js"></script>
 </head>
 
 <body>
@@ -132,7 +133,7 @@ if (isset($_SESSION['TaskId']) == false) {
             class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2"
             onClick=visibilityShow("CategoryEdit")>
           <input type="button" value="DarkMode" id="darkButton"
-            class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2" onClick=dark("red")>
+            class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2" onClick=darkFunc()>
           <input type="button" value="Exit" id="exitButton"
             class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2" onClick=exit()>
         </div>
