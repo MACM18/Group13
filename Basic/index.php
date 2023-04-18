@@ -17,7 +17,15 @@ if (isset($_SESSION['TaskId']) == false) {
 } else {
   $task = $_SESSION['TaskId'];
 }
-
+$queryColor = "SELECT color from color WHERE User_Name='$currentuser'";
+$resultColor = mysqli_query($connection, $queryColor);
+$colorArray = mysqli_fetch_array($resultColor);
+if (isset($_SESSION['color']) == false) {
+  $color = $colorArray[0];
+} else {
+  $color = $_SESSION['color'];
+}
+// echo $color;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,17 +41,19 @@ if (isset($_SESSION['TaskId']) == false) {
   <!-- <script src="JavaScript\script.js"></script> -->
   <script src="src/JavaScript/Visibility.js"></script>
   <script src="src/JavaScript/MainScripts.js"></script>
+  <script src="src/JavaScript/dark2.js"></script>
   <script>
     window.addEventListener("load", function () {
       document.querySelector("#Loading").style.display = "none";
     });
   </script>
+  <!-- <link rel="stylesheet" href="src/CSS/Styles.css"> -->
 </head>
 
 <body>
   <div id="Loading">
     <h1
-      class="absolute top-0 left-0 text-3xl w-screen h-screen text-amber-600 text-center flex flex-auto justify-center items-center z-50 bg-white font-bold font-sans underline">
+      class="absolute top-0 left-0 text-3xl w-screen h-screen text-<?php echo $color ?>-600 text-center flex flex-auto justify-center items-center z-50 bg-white font-bold font-sans underline">
       Loading!</h1>
     <p>You will be redirected!</p>
   </div>
@@ -56,12 +66,12 @@ if (isset($_SESSION['TaskId']) == false) {
     $dataP = mysqli_fetch_assoc($resultP);
     ?>
     <div id="User_Profile"
-      class="absolute top-1 right-0 py-3 px-1 hover:cursor-pointer bg-amber-600 border-2 border-white dark:bg-black rounded-l-xl"
+      class="absolute top-1 right-0 py-3 px-1 hover:cursor-pointer bg-<?php echo $color ?>-600 border-2 border-white rounded-l-xl"
       onClick=visibilityToggle("show","User_Profile","User_Profile_Max")>
       ◀️
     </div>
     <div id="User_Profile_Max" onClick=visibilityToggle("hide","User_Profile","User_Profile_Max")
-      class=" absolute top-1 right-1 bg-amber-600 w-fit h-fit p-2 border-2 rounded-lg shadow-lg hover:cursor-pointer hidden">
+      class=" absolute top-1 right-1 bg-<?php echo $color ?>-600 w-fit h-fit p-2 border-2 rounded-lg shadow-lg hover:cursor-pointer hidden">
       <div id="User_Profile_Max_Inside"
         class="p-2 border-2 w-fit h-fit flex flex-col justify-around rounded-lg items-center">
         <div class="w-fit h-fit rounded-lg border-2">
@@ -78,23 +88,25 @@ if (isset($_SESSION['TaskId']) == false) {
     </div>
     <!-- ADD -->
     <div id="AddButton"
-      class="absolute bottom-10 right-10 bg-amber-600 p-5 h-5 w-5 border-2 rounded-lg flex flex-auto justify-center items-center"
+      class="absolute bottom-10 right-10 bg-<?php echo $color ?>-600 p-5 h-5 w-5 border-2 rounded-lg flex flex-auto justify-center items-center"
       onClick=visibilityToggle("show","AddButton","AddButton_Max")>
       <p>+</p>
     </div>
     <div id="AddButton_Max"
       class="absolute bottom-8 right-8 p-2  w-fit h-fit rounded-lg flex flex-col justify-around border-2 gap-2 hidden"
       onClick=visibilityToggle("hide","AddButton","AddButton_Max")>
-      <div id="newTask" class="p-2 bg-amber-600 w-fit h-fit border-2 rounded-full" onClick=visibilityShow("TaskAdd")>
+      <div id="newTask" class="p-2 bg-<?php echo $color ?>-600 w-fit h-fit border-2 rounded-full"
+        onClick=visibilityShow("TaskAdd")>
         <p>+ New task</p>
       </div>
-      <div id="newCategory" class="p-2 bg-amber-600 backdrop-blur-lg w-fit h-fit border-2 rounded-full"
+      <div id="newCategory" class="p-2 bg-<?php echo $color ?>-600 backdrop-blur-lg w-fit h-fit border-2 rounded-full"
         onClick=visibilityShow("CategoryAdd")>
         <p>+ New Category</p>
       </div>
     </div>
     <div id="Top_Section" class="p-2 flex flex-row w-full h-fit">
-      <div id="CategoryArea" class="w-full h-fit bg-blue-300 dark:bg-blue-800 rounded-xl p-2 border-2 border-blue-800">
+      <div id="CategoryArea"
+        class="w-full h-fit bg-<?php echo $color ?>-300 dark:bg-<?php echo $color ?>-800 rounded-xl p-2 border-2 border-<?php echo $color ?>-800">
         <div class="w-full h-fit ">
           <div class="flex flex-row gap-5 overflow-x-auto overflow-y-hidden">
             <?php
@@ -104,13 +116,13 @@ if (isset($_SESSION['TaskId']) == false) {
             while ($array = mysqli_fetch_array($result)) {
               ?>
               <div id=" categoryBox"
-                class=" rounded-xl bg-amber-600 border-2 shadow-lg hover:shadow-sm flex flex-col items-center justify-around w-fit h-fit gap-2 p-2"
+                class=" rounded-xl bg-<?php echo $color ?>-600 border-2 shadow-lg hover:shadow-sm flex flex-col items-center justify-around w-fit h-fit gap-2 p-2"
                 onclick="selectCategory(<?php echo $array[2]; ?>)">
                 <div id="cBTitle" class="font-medium text-lg">
                   <?php echo $array[0]; ?>
                 </div>
                 <div id="cBEmoji"
-                  class="w-20 h-20 border-2 border-amber-600 bg-white flex text-4xl flex-auto justify-center items-center rounded-xl">
+                  class="w-20 h-20 border-2 border-<?php echo $color ?>-600 bg-white flex text-4xl flex-auto justify-center items-center rounded-xl">
                   <?php echo $array[1]; ?>
                 </div>
               </div>
@@ -123,22 +135,106 @@ if (isset($_SESSION['TaskId']) == false) {
     </div>
     <div id="Bottom_Section" class="p-2 flex flex-row w-full h-3/4 gap-5">
       <div id="NavBar"
-        class="w-1/3 h-full bg-blue-300 dark:bg-black rounded-xl flex flex-col gap-5 p-2 border-2 border-blue-800">
+        class="w-1/3 h-full bg-<?php echo $color ?>-300 rounded-xl flex flex-col gap-5 p-2 border-2 border-<?php echo $color ?>-800">
         <div id="Title" class="p-2 text-center w-full h-fit font-bold text-2xl">Task Manager</div>
         <div id="NavBar_Buttons" class="flex flex-col w-full h-full justify-around">
           <input type="button" value="Colors" id="colorButton"
-            class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2" onClick=colorsMenu()>
+            class="p-4 w-full bg-<?php echo $color ?>-600 font-semibold rounded-l-full hover:text-right border-2"
+            onClick=visibilityShow("ColorsMenu")>
           <input type="button" value="Category" id="categoryButton"
-            class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2"
+            class="p-4 w-full bg-<?php echo $color ?>-600 font-semibold rounded-l-full hover:text-right border-2"
             onClick=visibilityShow("CategoryEdit")>
           <input type="button" value="DarkMode" id="darkButton"
-            class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2" onClick=dark("red")>
+            class="p-4 w-full bg-<?php echo $color ?>-600 font-semibold rounded-l-full hover:text-right border-2"
+            onClick=darkFunc("<?php echo $color ?>")>
           <input type="button" value="Exit" id="exitButton"
-            class="p-4 w-full bg-amber-600 font-semibold rounded-l-full hover:text-right border-2" onClick=exit()>
+            class="p-4 w-full bg-<?php echo $color ?>-600 font-semibold rounded-l-full hover:text-right border-2"
+            onClick=exit()>
+        </div>
+      </div>
+      <div id="ColorsMenu"
+        class="absolute top-0 right-0 backdrop-blur-md w-5/12 h-screen flex flex-col gap-5 hidden overflow-y-auto p-2 border-2 rounded-lg">
+        <div
+          class="w-10 h-10 absolute top-0 left-0 flex flex-auto rounded-lg hover:text-white border-2 bg-<?php echo $color ?>-600 hover:bg-red-600 justify-center items-center"
+          onClick=visibilityHide("ColorsMenu")>x</div>
+        <div id="ColorTitle"
+          class="w-full h-fit p-4 bg-<?php echo $color; ?>-600 font-medium text-2xl rounded-lg border-2 text-center text-black">
+          Colors
+        </div>
+        <div id="ColorItems"
+          class="w-full h-full p-2 bg-<?php echo $color ?>-600 rounded-lg border-2 flex flex-wrap gap-10 justify-center items-center">
+          <div id=" red">
+            <div class="w-20 h-20 border-1 bg-red-500 rounded-lg shadow-lg hover:shadow-none" onClick=setColor("red")>
+            </div>
+            <div class="text-center">
+              <p>Red</p>
+            </div>
+          </div>
+          <div id="yellow">
+            <div class="w-20 h-20 border-1 bg-yellow-500 rounded-lg shadow-lg hover:shadow-none"
+              onClick=setColor("yellow")>
+            </div>
+            <div class="text-center">
+              <p>Yellow</p>
+            </div>
+          </div>
+          <div id="green">
+            <div class="w-20 h-20 border-1 bg-green-500 rounded-lg shadow-lg hover:shadow-none"
+              onClick=setColor("green")>
+            </div>
+            <div class="text-center">
+              <p>Green</p>
+            </div>
+          </div>
+          <div id="blue">
+            <div class="w-20 h-20 border-1 bg-blue-500 rounded-lg shadow-lg hover:shadow-none" onClick=setColor("blue")>
+            </div>
+            <div class="text-center">
+              <p>Blue</p>
+            </div>
+          </div>
+          <div id="purple">
+            <div class="w-20 h-20 border-1 bg-purple-500 rounded-lg shadow-lg hover:shadow-none"
+              onClick=setColor("purple")>
+            </div>
+            <div class="text-center">
+              <p>Purple</p>
+            </div>
+          </div>
+          <div id="rose">
+            <div class="w-20 h-20 border-1 bg-rose-500 rounded-lg shadow-lg hover:shadow-none" onClick=setColor("rose")>
+            </div>
+            <div class="text-center">
+              <p>Rose</p>
+            </div>
+          </div>
+          <div id="slate">
+            <div class="w-20 h-20 border-1 bg-slate-500 rounded-lg shadow-lg hover:shadow-none"
+              onClick=setColor("slate")>
+            </div>
+            <div class="text-center">
+              <p>Slate</p>
+            </div>
+          </div>
+          <div id="orange">
+            <div class="w-20 h-20 border-1 bg-orange-500 rounded-lg shadow-lg hover:shadow-none"
+              onClick=setColor("orange")>
+            </div>
+            <div class="text-center">
+              <p>Orange</p>
+            </div class="text-center">
+          </div>
+          <div id="lime">
+            <div class="w-20 h-20 border-1 bg-lime-500 rounded-lg shadow-lg hover:shadow-none" onClick=setColor("lime")>
+            </div>
+            <div class="text-center">
+              <p>Lime</p>
+            </div>
+          </div>
         </div>
       </div>
       <div id="TaskArea"
-        class="w-full h-full bg-blue-300 dark:bg-blue-800 rounded-xl flex flex-col gap-5 p-4 border-2 border-blue-800">
+        class="w-full h-full bg-<?php echo $color ?>-300 rounded-xl flex flex-col gap-5 p-4 border-2 border-<?php echo $color ?>-800">
         <!-- Tasks -->
         <div class="w-full h-full">
           <div class=" w-full h-full p-4 flex flex-col gap-5 overflow-y-auto overflow-x-hidden">
@@ -153,10 +249,11 @@ if (isset($_SESSION['TaskId']) == false) {
             while ($arrayTask = mysqli_fetch_array($resultTask)) {
               ?>
               <div class="w-full h-fit flex flex-col items-end">
-                <div class="w-full rounded-xl border-2 bg-amber-600 rounded-br-none flex flex-row gap-4 items-center p-4">
+                <div
+                  class="w-full rounded-xl border-2 bg-<?php echo $color ?>-600 rounded-br-none flex flex-row gap-4 items-center p-4">
                   <div onClick="SelectFun1(<?php echo $arrayTask["status"]; ?>,
               <?php echo $arrayTask["id"]; ?>)"
-                    class="rounded-full bg-amber-600 border-white border-2 w-10 h-10 flex justify-around items-center">
+                    class="rounded-full bg-<?php echo $color ?>-600 border-white border-2 w-10 h-10 flex justify-around items-center">
                     <p id="Tick">
                       <?php if ($arrayTask["status"] == true) {
                         echo "✔️";
@@ -164,14 +261,14 @@ if (isset($_SESSION['TaskId']) == false) {
                       ?>
                     </p>
                   </div>
-                  <div class="w-full h-full text-amber-600 bg-white rounded-lg text-xl indent-5"
+                  <div class="w-full h-full text-<?php echo $color ?>-600 bg-white rounded-lg text-xl indent-5"
                     onClick="selectTask(<?php echo $arrayTask["id"]; ?>)" <p>
                     <?php echo $arrayTask["task"]; ?>
                     </p>
                   </div>
                 </div>
                 <div
-                  class="w-fit px-3 h-fit text-amber-600 bg-white rounded-b-xl flex flex-row gap-3 border-2 border-t-0 ">
+                  class="w-fit px-3 h-fit text-<?php echo $color ?>-600 bg-white rounded-b-xl flex flex-row gap-3 border-2 border-t-0 ">
                   <div>Date :
                     <?php echo $arrayTask["Date"]; ?>
                   </div>
@@ -253,7 +350,7 @@ if (isset($_SESSION['TaskId']) == false) {
       <div class="w-1/6 h-full"></div>
       <div class="w-5/6 h-full flex flex-row">
         <div
-          class="w-10 h-10 absolute top-0 right-0 flex flex-auto rounded-lg hover:text-white border-2 bg-amber-600 hover:bg-red-600 justify-center items-center"
+          class="w-10 h-10 absolute top-0 right-0 flex flex-auto rounded-lg hover:text-white border-2 bg-<?php echo $color ?>-600 hover:bg-red-600 justify-center items-center"
           onClick=visibilityHide("TaskAdd")>x</div>
         <form class="w-full h-full p-5 flex flex-col justify-around items-end" id="FormAddTask">
           <div class="flex flex-row gap-1 w-full"><label for="TaskTitle"
@@ -297,7 +394,7 @@ if (isset($_SESSION['TaskId']) == false) {
       <div class="w-1/6 h-full"></div>
       <div class="w-5/6 h-full flex flex-row">
         <div
-          class="w-10 h-10 absolute top-0 right-0 flex rounded-lg hover:text-white border-2 bg-amber-600 hover:bg-red-600 flex-auto justify-center items-center"
+          class="w-10 h-10 absolute top-0 right-0 flex rounded-lg hover:text-white border-2 bg-<?php echo $color ?>-600 hover:bg-red-600 flex-auto justify-center items-center"
           onClick=visibilityHide("CategoryAdd")>x</div>
         <form class="w-full h-full p-5 flex flex-col justify-around items-end" id="FormAddCategory">
           <div class="flex flex-row gap-1 w-full"><label for="CTitle"
@@ -332,7 +429,7 @@ if (isset($_SESSION['TaskId']) == false) {
   <div id="CategoryEdit"
     class="absolute top-0 right-0 backdrop-blur-md w-5/12 h-screen hidden flex flex-col gap-5 overflow-y-auto p-2 border-2 rounded-lg">
     <div
-      class="w-10 h-10 absolute top-0 left-0 flex flex-auto rounded-lg hover:text-white border-2 bg-amber-600 hover:bg-red-600 justify-center items-center"
+      class="w-10 h-10 absolute top-0 left-0 flex flex-auto rounded-lg hover:text-white border-2 bg-<?php echo $color ?>-600 hover:bg-red-600 justify-center items-center"
       onClick=visibilityHide("CategoryEdit")>x</div>
     <div class="flex flex-col gap-3 overflow-y-auto overflow-x-hidden">
       <div class="w-full h-fit p-4 border-2 rounded-lg text-center text-3xl font-bold">📃 Categories</div>
@@ -380,6 +477,7 @@ if (isset($_SESSION['TaskId']) == false) {
       }
       ?>
     </div>
+    <!-- ColorsMenu -->
 </body>
 
 </html>

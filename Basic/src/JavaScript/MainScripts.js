@@ -4,6 +4,9 @@ function exit() {
   xhr.send();
   window.location.href = "../Basic/src/Html/Login.html";
 }
+// window.onload = function() {
+//   localStorage.color=""
+// }
 
 function selectCategory(element) {
   // var subDiv = element.querySelector('#ID');
@@ -23,6 +26,31 @@ function selectCategory(element) {
 
   fetch(
     "http://localhost:8080/Group13/Basic/src/PHP/selectCategory.php",
+    requestOptions
+  )
+    .then((response) => response.text())
+    .then((result) => console.log(result))
+    .catch((error) => console.log("error", error));
+  location.reload();
+}
+function setColor(element) {
+  // var subDiv = element.querySelector('#ID');
+  // console.log(element);
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+  var urlencoded = new URLSearchParams();
+  urlencoded.append("color", element);
+
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: urlencoded,
+    redirect: "follow",
+  };
+
+  fetch(
+    "http://localhost:8080/Group13/Basic/src/PHP/selectColor.php",
     requestOptions
   )
     .then((response) => response.text())
