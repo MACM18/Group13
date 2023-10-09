@@ -25,7 +25,7 @@ function selectCategory(element) {
   };
 
   fetch(
-    "http://localhost:8080/Group13/Basic/src/PHP/selectCategory.php",
+    "http://localhost/Group13/Basic/src/PHP/selectCategory.php",
     requestOptions
   )
     .then((response) => response.text())
@@ -50,7 +50,7 @@ function setColor(element) {
   };
 
   fetch(
-    "http://localhost:8080/Group13/Basic/src/PHP/selectColor.php",
+    "http://localhost/Group13/Basic/src/PHP/selectColor.php",
     requestOptions
   )
     .then((response) => response.text())
@@ -75,7 +75,7 @@ function selectTask(element) {
   };
 
   fetch(
-    "http://localhost:8080/Group13/Basic/src/PHP/selectTask.php",
+    "http://localhost/Group13/Basic/src/PHP/selectTask.php",
     requestOptions
   )
     .then((response) => response.text())
@@ -104,7 +104,7 @@ function SelectFun1(status, id) {
   };
 
   fetch(
-    "http://localhost:8080/Group13/Basic/src/PHP/updateTaskStatus.php",
+    "http://localhost/Group13/Basic/src/PHP/updateTaskStatus.php",
     requestOptions
   )
     .then((response) => response.text())
@@ -136,7 +136,7 @@ function UpdateData(params) {
   };
 
   fetch(
-    "http://localhost:8080/Group13/Basic/src/PHP/updateTask.php",
+    "http://localhost/Group13/Basic/src/PHP/updateTask.php",
     requestOptions
   )
     .then((response) => response.json())
@@ -164,7 +164,7 @@ function updateCategory(params) {
   };
 
   fetch(
-    "http://localhost:8080/Group13/Basic/src/PHP/updateCategory.php",
+    "http://localhost/Group13/Basic/src/PHP/updateCategory.php",
     requestOptions
   )
     .then((response) => response.json())
@@ -333,7 +333,7 @@ function DeleteData(params) {
   };
 
   fetch(
-    "http://localhost:8080/Group13/Basic/src/PHP/deleteTask.php",
+    "http://localhost/Group13/Basic/src/PHP/deleteTask.php",
     requestOptions
   )
     .then((response) => response.json())
@@ -357,7 +357,7 @@ function deleteCategory(params) {
   };
 
   fetch(
-    "http://localhost:8080/Group13/Basic/src/PHP/deleteCategory.php",
+    "http://localhost/Group13/Basic/src/PHP/deleteCategory.php",
     requestOptions
   )
     .then((response) => response.json())
@@ -384,7 +384,7 @@ function AddData() {
   };
 
   fetch(
-    "http://localhost:8080/Group13/Basic/src/PHP/addTask.php",
+    "http://localhost/Group13/Basic/src/PHP/addTask.php",
     requestOptions
   )
     .then((response) => response.json())
@@ -409,7 +409,7 @@ function AddCategory() {
   };
 
   fetch(
-    "http://localhost:8080/Group13/Basic/src/PHP/addCategory.php",
+    "http://localhost/Group13/Basic/src/PHP/addCategory.php",
     requestOptions
   )
     .then((response) => response.json())
